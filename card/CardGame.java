@@ -1,7 +1,11 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
+
+
 
 
 class Card {
@@ -25,7 +29,7 @@ class Card {
 
     @Override
     public String toString() {
-        return suite+ ":"+ rank;
+        return "["+suite+ ":"+ rank+"]";
     }
     
     
@@ -39,41 +43,37 @@ class CardDeck {
 
     public CardDeck() {
 
-        /*for (int i = 0; i < 54; i++) {
-            cards[i] = i;
-        }*/
-        
-        for( Card.SUITE suite : Card.SUITE.values()) {
+        /*for( Card.SUITE suite : Card.SUITE.values()) {
             for (Card.RANK rank : Card.RANK.values()) {
                 Card  card = new Card(suite, rank);
                 cards.add(card);
             }
-        }
+        }*/
+        
+        Arrays.stream(Card.SUITE.values()).forEach(suite -> {
+            Arrays.stream(Card.RANK.values()).forEach(rank ->{
+                Card  card = new Card(suite, rank);
+                cards.add(card);
+            });
+        });
 
     }
 
     public void print() {
 
-        System.out.println("Deck ------");
-        for (Card card : cards) {
-            System.out.print(card + " ->");
-        }
-        System.out.println("Deck ------");
-
+        System.out.println("Printing Deck ------");
+        cards.forEach(e -> System.out.print(e + "->"));
+        System.out.println();
     }
 
     public void suffle() {
-        System.out.println("suffle started" + cards.size());
-        for (int i = 0; i < cards.size(); i++) {
-            //System.out.println(cards.size());
-            int randomIndex = rand.nextInt(cards.size());
-            //System.out.println("random "+ randomIndex);
-            Collections.swap(cards, i, randomIndex);
-            
-
-        }
         
-        System.out.println("suffle done");
+        IntStream.range(0, cards.size()).forEach(cardIndex -> {
+            int randomIndex = rand.nextInt(cards.size());
+            Collections.swap(cards, cardIndex, randomIndex);
+        });
+        
+
 
     }
 }
@@ -83,7 +83,6 @@ public class CardGame {
     public static void main(String r[]) {
 
         CardDeck deck = new CardDeck();
-        System.out.println(deck.cards.size());
         deck.print();
         deck.suffle();
         deck.print();
